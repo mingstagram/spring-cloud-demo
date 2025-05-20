@@ -1,12 +1,12 @@
-package com.example.user_service.entity;
+package com.example.order_service.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
-@Table(name = "users")
+@Table(name = "products")
 @Data
-public class User {
+public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,5 +14,7 @@ public class User {
 
     private String name;
 
-    private String email;
+    private int price;
+
+    private int stock;
 }

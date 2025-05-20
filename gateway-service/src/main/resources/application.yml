@@ -13,6 +13,7 @@ spring:
             - Path=/user/**
           filters:
             - StripPrefix=1
+            - name: UserRouteFilter
 
         - id: order-service
           uri: lb://order-service
@@ -20,6 +21,7 @@ spring:
             - Path=/order/**
           filters:
             - StripPrefix=1
+            - name: OrderRouteFilter
 
 eureka:
   client:
