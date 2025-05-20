@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>gateway-service</artifactId>
+	<artifactId>monitoring-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>gateway-service</name>
-	<description>Demo project for Spring Boot</description>
+	<name>monitoring-service</name>
+	<description>monitoring-service</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -37,14 +37,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-gateway</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-bus-kafka</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
 
@@ -52,14 +44,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
-		</dependency>
-
-		<!-- Lombok -->
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.18.32</version> <!-- 최신 버전은 필요시 변경 -->
-			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>
