@@ -148,7 +148,7 @@ GET /orders/{userId}
 
 ## 📌 기타
 
-- 설정 파일 위치: [`spring-cloud-demo-config`](https://github.com/your-id/spring-cloud-demo-config)
+- 설정 파일 위치: [`spring-cloud-demo-config`](https://github.com/mingstagram/spring-cloud-demo-config)
 - GitHub Actions or Jenkins CI/CD 적용 예정
 - 실습용 Postman API 파일은 `/docs/postman_collection.json` 참고
 
