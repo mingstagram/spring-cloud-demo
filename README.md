@@ -1,4 +1,4 @@
-# 🛍️ Spring Cloud 기반 커머스 플랫폼 
+# 🛍️ Spring Cloud 기반 커머스 플랫폼
 
 **Spring Cloud 기반 MSA 아키텍처를 적용한 실전형 커머스 플랫폼입니다.**  
 회원가입 → 상품 조회 → 장바구니 → 주문 → 결제 → 알림까지, B2C 전자상거래 흐름을 마이크로서비스로 설계하고, Kafka, Redis 등 다양한 인프라와 함께 구성하였습니다.
@@ -36,16 +36,16 @@ spring-cloud-demo/
 
 ## 🔧 사용 기술
 
-| 영역 | 기술 |
-|------|------|
-| Backend | Java 17, Spring Boot 3.2.x, Spring Cloud 2023.x |
-| MSA 통신 | Eureka, Spring Cloud Gateway, OpenFeign, Resilience4j |
-| 인증/보안 | Spring Security, JWT, Redis (토큰 관리) |
-| 비동기 처리 | Kafka, Redis Pub/Sub |
-| 데이터베이스 | MySQL, Redis |
-| 검색 | Elasticsearch |
-| 모니터링 | Spring Boot Actuator, Spring Admin, Zipkin |
-| 배포 자동화 | Docker, Docker Compose (CI/CD는 Jenkins 예정) |
+| 영역         | 기술                                                  |
+| ------------ | ----------------------------------------------------- |
+| Backend      | Java 17, Spring Boot 3.2.x, Spring Cloud 2023.x       |
+| MSA 통신     | Eureka, Spring Cloud Gateway, OpenFeign, Resilience4j |
+| 인증/보안    | Spring Security, JWT, Redis (토큰 관리)               |
+| 비동기 처리  | Kafka, Redis Pub/Sub                                  |
+| 데이터베이스 | MySQL, Redis                                          |
+| 검색         | Elasticsearch                                         |
+| 모니터링     | Spring Boot Actuator, Spring Admin, Zipkin            |
+| 배포 자동화  | Docker, Docker Compose (CI/CD는 Jenkins 예정)         |
 
 ---
 
@@ -67,9 +67,9 @@ spring-cloud-demo/
 
 ### 1. 필수 실행 순서
 
-1. `eureka-server`  
-2. `config-server`  
-3. `Kafka`, `Redis`, `MySQL` 등 인프라 기동  
+1. `eureka-server`
+2. `config-server`
+3. `Kafka`, `Redis`, `MySQL` 등 인프라 기동
 4. 나머지 서비스 (user, auth, product 등) 개별 실행
 
 ### 2. 환경 구성 (Docker)
@@ -77,10 +77,15 @@ spring-cloud-demo/
 ```bash
 # Kafka + Zookeeper 실행
 docker run -d --name zookeeper -p 2181:2181 bitnami/zookeeper
-docker run -d --name kafka -p 9092:9092 \
-  -e KAFKA_CFG_ZOOKEEPER_CONNECT=host.docker.internal:2181 \
-  -e KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 \
-  bitnami/kafka
+docker run -d \
+  --name kafka \
+  -p 9092:9092 \
+  -e KAFKA_BROKER_ID=1 \
+  -e KAFKA_ZOOKEEPER_CONNECT=192.168.5.61:2181 \
+  -e ALLOW_PLAINTEXT_LISTENER=yes \
+  -e KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092 \
+  -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://192.168.5.61:9092 \
+  bitnami/kafka:3.5
 
 # Redis 실행
 docker run -d -p 6379:6379 --name redis redis
@@ -156,8 +161,8 @@ GET /orders/{userId}
 
 ## ✍️ 개발자 정보
 
-| 이름 | 깃허브 | 기술 블로그 |
-|------|--------|-------------|
+| 이름   | 깃허브                                         | 기술 블로그                                      |
+| ------ | ---------------------------------------------- | ------------------------------------------------ |
 | 김민국 | [@mingstagram](https://github.com/mingstagram) | [ProgramminGucci](https://mingucci.tistory.com/) |
 
 ---

@@ -1,0 +1,24 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: auth-service
+
+  data:
+    redis:
+      host: 192.168.5.61
+      port: 6379
+      timeout: 1000ms
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+    register-with-eureka: true
+    fetch-registry: true
+
+jwt:
+  secret: minguccicommerce
+  access-token-expiration: 900000
+  refresh-token-expiration: 604800000

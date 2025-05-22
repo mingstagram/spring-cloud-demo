@@ -1,6 +1,6 @@
 package com.minguccicommerce.order_service.config;
 
-import com.minguccicommerce.common_library.UserNotFoundException;
+import com.minguccicommerce.order_service.exception.UserNotFoundException;
 import feign.Response;
 import feign.codec.ErrorDecoder;
 

@@ -4,6 +4,8 @@ server:
 spring:
   application:
     name: gateway-service
+  kafka:
+    bootstrap-servers: 192.168.5.61:9092
   cloud:
     gateway:
       routes:
@@ -22,6 +24,20 @@ spring:
           filters:
             - StripPrefix=1
             - name: OrderRouteFilter
+
+        - id: email-service
+          uri: lb://email-service
+          predicates:
+            - Path=/email/**
+          filters:
+            - StripPrefix=1
+
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/auth/**
+          filters:
+            - StripPrefix=1
 
 eureka:
   client:

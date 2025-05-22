@@ -1,9 +1,11 @@
 package com.minguccicommerce.user_service.controller;
 
-import com.minguccicommerce.common_library.ApiResponse;
-import com.minguccicommerce.common_library.exception.UserNotFoundException;
+import com.minguccicommerce.common_library.dto.ApiResponse;
+import com.minguccicommerce.user_service.dto.SignUpRequest;
 import com.minguccicommerce.user_service.entity.User;
+import com.minguccicommerce.user_service.exception.UserNotFoundException;
 import com.minguccicommerce.user_service.repository.UserRepository;
+import com.minguccicommerce.user_service.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,27 +13,25 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserRepository userRepository;
+    private final UserService userService;
 
-    @PostMapping
-    public ResponseEntity<ApiResponse<User>> create(@RequestBody User user) {
-        User saved = userRepository.save(user);
-        return ResponseEntity.ok(ApiResponse.ok(saved));
+    @PostMapping("/signup")
+    public ResponseEntity<ApiResponse<String>> signup(@RequestBody SignUpRequest request) {
+        userService.signup(request);
+        return ResponseEntity.ok(ApiResponse.ok("회원가입 완료"));
     }
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<User>>> list() {
-        return ResponseEntity.ok(ApiResponse.ok(userRepository.findAll()));
+        return ResponseEntity.ok(ApiResponse.ok(userService.findAll()));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<User>> getUser(@PathVariable Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("유저가 존재하지 않습니다."));
-        return ResponseEntity.ok(ApiResponse.ok(user));
+        return ResponseEntity.ok(ApiResponse.ok(userService.findById(id)));
     }
 }

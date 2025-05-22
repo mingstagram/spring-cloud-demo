@@ -1,7 +1,7 @@
 package com.minguccicommerce.order_service.client;
 
 import com.minguccicommerce.order_service.dto.UserDto;
-import com.minguccicommerce.common_library.UserNotFoundException;
+import com.minguccicommerce.order_service.exception.UserNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;

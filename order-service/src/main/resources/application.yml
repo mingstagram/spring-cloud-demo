@@ -1,5 +1,8 @@
 # application.yml (order-service)
 
+server:
+  port: 0
+
 spring:
   application:
     name: order-service
@@ -20,6 +23,3 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka
-
-server:
-  port: 8082

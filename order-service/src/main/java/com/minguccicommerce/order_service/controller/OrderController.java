@@ -1,6 +1,6 @@
 package com.minguccicommerce.order_service.controller;
 
-import com.minguccicommerce.common_library.ApiResponse;
+import com.minguccicommerce.common_library.dto.ApiResponse;
 import com.minguccicommerce.order_service.client.UserClient;
 import com.minguccicommerce.order_service.dto.OrderRequest;
 import com.minguccicommerce.order_service.dto.UserDto;

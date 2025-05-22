@@ -1,0 +1,25 @@
+server:
+  port: 0
+
+spring:
+  application:
+    name: email-service
+
+  data:
+    redis:
+      host: 192.168.5.61
+      port: 6379
+      timeout: 1000ms # (??)
+# mail:
+#    host: smtp.naver.com # ?? gmail
+#    port: 587
+#    username: mandoo1021@naver.com
+#    password: {your_password}
+#    properties:
+#      mail.smtp.auth: true
+#      mail.smtp.starttls.enable: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
