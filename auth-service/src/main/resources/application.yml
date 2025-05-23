@@ -1,5 +1,5 @@
 server:
-  port: 8082
+  port: 0
 
 spring:
   application:
@@ -19,6 +19,6 @@ eureka:
     fetch-registry: true
 
 jwt:
-  secret: minguccicommerce
+  secret: minguccicommerce-secure-jwt-key-which-is-very-long-32byte
   access-token-expiration: 900000
   refresh-token-expiration: 604800000

@@ -2,8 +2,7 @@ package com.minguccicommerce.user_service.service;
 
 import com.minguccicommerce.common_library.dto.ApiResponse;
 import com.minguccicommerce.user_service.client.EmailVerifyClient;
-import com.minguccicommerce.user_service.dto.EmailVerifyRequest;
-import com.minguccicommerce.user_service.dto.SignUpRequest;
+import com.minguccicommerce.user_service.dto.*;
 import com.minguccicommerce.user_service.entity.User;
 import com.minguccicommerce.user_service.exception.UserNotFoundException;
 import com.minguccicommerce.user_service.repository.UserRepository;
@@ -53,6 +52,29 @@ public class UserService {
 
         userRepository.save(user);
 
+    }
+
+    public User findByEmail(String email) {
+        System.out.println("📌 이메일로 사용자 조회 시작: " + email);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> {
+                    System.out.println("❌ 사용자 없음! 예외 발생");
+                    return new UserNotFoundException("해당 이메일의 사용자를 찾을 수 없습니다.");
+                });
+        System.out.println("✔ user.getPassword() = " + user.getPassword());
+        return user;
+    }
+
+    public UserProfileResponse getUserInfo(Long id) {
+        User user = findById(id);
+        return UserProfileResponse.from(user);
+    }
+
+    public UserProfileResponse updateUser(Long id, UserUpdateRequest request) {
+        User user = findById(id);
+        user.setName(request.getName()); // 엔티티에 setName() 있어야 함
+        userRepository.save(user);
+        return UserProfileResponse.from(user);
     }
 
 }
