@@ -16,4 +16,8 @@ public class User {
     private String password;
 
     private boolean isVerified = false; // 이메일 인증 여부
+
+    public void changePassword(String newEncodedPassword) {
+        this.password = newEncodedPassword;
+    }
 }

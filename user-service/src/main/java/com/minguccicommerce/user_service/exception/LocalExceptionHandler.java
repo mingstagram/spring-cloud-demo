@@ -16,6 +16,11 @@ public class LocalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.fail(e.getMessage()));
     }
 
+    @ExceptionHandler(InvalidPasswordException.class)
+    public ResponseEntity<ApiResponse<?>> handleInvalidPassword(InvalidPasswordException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.fail(e.getMessage()));
+    }
+
     @PostConstruct
     public void init() {
         System.out.println("✅ user-service LocalExceptionHandler 등록됨");

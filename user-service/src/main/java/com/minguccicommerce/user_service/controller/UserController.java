@@ -1,16 +1,15 @@
 package com.minguccicommerce.user_service.controller;
 
 import com.minguccicommerce.common_library.dto.ApiResponse;
-import com.minguccicommerce.user_service.dto.SignUpRequest;
-import com.minguccicommerce.user_service.dto.UserProfileResponse;
-import com.minguccicommerce.user_service.dto.UserUpdateRequest;
+import com.minguccicommerce.user_service.dto.*;
 import com.minguccicommerce.user_service.entity.User;
-import com.minguccicommerce.user_service.dto.UserResponse;
 import com.minguccicommerce.user_service.repository.UserRepository;
 import com.minguccicommerce.user_service.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -52,13 +51,24 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.ok(user));
     }
 
-    @PutMapping("/me")
+    @PatchMapping("/me")
     public ResponseEntity<ApiResponse<UserProfileResponse>> updateMyInfo(
-            Authentication authentication,
+            @AuthenticationPrincipal Long userId,
             @RequestBody UserUpdateRequest request
     ) {
-        Long userId = (Long) authentication.getPrincipal();
         UserProfileResponse response = userService.updateUser(userId, request);
         return ResponseEntity.ok(ApiResponse.ok(response));
+    }
+
+    @PatchMapping("/password")
+    public ResponseEntity<ApiResponse<Void>> changePassword(@AuthenticationPrincipal Long userId, @Valid @RequestBody ChangePasswordRequest request) {
+        userService.changePassword(userId, request);
+        return ResponseEntity.ok(ApiResponse.success());
+    }
+
+    @DeleteMapping
+    public ResponseEntity<ApiResponse<Void>> deleteUsers(@AuthenticationPrincipal Long userId) {
+        userService.deleteUser(userId);
+        return ResponseEntity.ok(ApiResponse.success());
     }
 }

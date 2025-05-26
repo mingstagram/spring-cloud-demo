@@ -4,8 +4,10 @@ import com.minguccicommerce.common_library.dto.ApiResponse;
 import com.minguccicommerce.user_service.client.EmailVerifyClient;
 import com.minguccicommerce.user_service.dto.*;
 import com.minguccicommerce.user_service.entity.User;
+import com.minguccicommerce.user_service.exception.InvalidPasswordException;
 import com.minguccicommerce.user_service.exception.UserNotFoundException;
 import com.minguccicommerce.user_service.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -75,6 +77,23 @@ public class UserService {
         user.setName(request.getName()); // 엔티티에 setName() 있어야 함
         userRepository.save(user);
         return UserProfileResponse.from(user);
+    }
+
+    @Transactional
+    public void changePassword(Long userId, ChangePasswordRequest request) {
+        User user = findById(userId);
+
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+            throw new InvalidPasswordException();
+        }
+
+        user.changePassword(passwordEncoder.encode(request.getNewPassword()));
+    }
+
+    @Transactional
+    public void deleteUser(Long userId) {
+        User user = findById(userId);
+        userRepository.delete(user); // 실제 삭제
     }
 
 }
