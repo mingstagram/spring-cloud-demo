@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Import;
 
 @Import(GlobalExceptionHandler.class)
 @EnableFeignClients
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.minguccicommerce")
 public class OrderServiceApplication {
 
 	public static void main(String[] args) {

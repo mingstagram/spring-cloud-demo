@@ -39,6 +39,13 @@ spring:
           filters:
             - StripPrefix=1
 
+        - id: product-service
+          uri: lb://product-service
+          predicates:
+            - Path=/product/**
+          filters:
+            - StripPrefix=1
+
 eureka:
   client:
     service-url:

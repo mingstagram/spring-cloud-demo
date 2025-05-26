@@ -39,7 +39,6 @@ public class UserController {
 
     @GetMapping("/by-email")
     public ResponseEntity<ApiResponse<UserResponse>> getUserByEmail(@RequestParam("email") String email) {
-        System.out.println("📌 이메일로 사용자 조회 시작: " + email);
         User user = userService.findByEmail(email);
         return ResponseEntity.ok(ApiResponse.ok(UserResponse.from(user)));
     }

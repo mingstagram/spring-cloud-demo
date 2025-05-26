@@ -23,3 +23,8 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka
+
+jwt:
+  secret: minguccicommerce-secure-jwt-key-which-is-very-long-32byte
+  access-token-expiration: 900000
+  refresh-token-expiration: 604800000

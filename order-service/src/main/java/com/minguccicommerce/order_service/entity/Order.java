@@ -1,11 +1,15 @@
 package com.minguccicommerce.order_service.entity;
 
+import com.minguccicommerce.order_service.dto.OrderStatus;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "orders")
 @Data
+@Table(name = "orders")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Order {
 
     @Id
@@ -16,5 +20,29 @@ public class Order {
 
     private Long productId;
 
-    private int quantity;
+    private Integer quantity;
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
+    @Builder
+    public Order(Long userId, Long productId, Integer quantity, OrderStatus status) {
+        this.userId = userId;
+        this.productId = productId;
+        this.quantity = quantity;
+        this.status = status;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }

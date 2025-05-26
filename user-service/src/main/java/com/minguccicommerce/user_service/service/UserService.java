@@ -72,10 +72,10 @@ public class UserService {
         return UserProfileResponse.from(user);
     }
 
+    @Transactional
     public UserProfileResponse updateUser(Long id, UserUpdateRequest request) {
         User user = findById(id);
         user.setName(request.getName()); // 엔티티에 setName() 있어야 함
-        userRepository.save(user);
         return UserProfileResponse.from(user);
     }
 
