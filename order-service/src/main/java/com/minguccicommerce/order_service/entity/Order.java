@@ -23,6 +23,7 @@ public class Order {
     private Integer quantity;
 
     @Enumerated(EnumType.STRING)
+    @Column(length = 20)
     private OrderStatus status;
 
     private LocalDateTime createdAt;
@@ -44,5 +45,16 @@ public class Order {
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
+    }
+
+    public void updateStatus(OrderStatus status) {
+        this.status = status;
+    }
+
+    public void cancelOrder() {
+        if (this.status != OrderStatus.CREATED) {
+            throw new IllegalStateException("이미 처리된 주문은 취소할 수 없습니다.");
+        }
+        this.status = OrderStatus.CANCELLED;
     }
 }

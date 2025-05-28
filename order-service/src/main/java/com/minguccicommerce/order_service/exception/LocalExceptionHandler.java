@@ -15,6 +15,11 @@ public class LocalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.fail(e.getMessage()));
     }
 
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ResponseEntity<ApiResponse<?>> handleOrderNotFound(OrderNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.fail(e.getMessage()));
+    }
+
     @PostConstruct
     public void init() {
         System.out.println("✅ order-service LocalExceptionHandler 등록됨");

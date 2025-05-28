@@ -32,7 +32,12 @@ public class ProductService {
     public void decreaseStock(Long id, int quantity) {
         Product product = findById(id);
         product.decreaseStock(quantity);
-        productRepository.save(product);
+    }
+
+    @Transactional
+    public void increaseStock(Long id, int quantity) {
+        Product product = findById(id);
+        product.increaseStock(quantity);
     }
 
     private Product findById(Long id) {

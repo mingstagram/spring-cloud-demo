@@ -19,4 +19,10 @@ public class ProductInternalController {
         return ResponseEntity.ok(ApiResponse.success());
     }
 
+    @PostMapping("/{id}/increase-stock")
+    public ResponseEntity<ApiResponse<Void>> increaseStock(@PathVariable Long id, @RequestParam int quantity) {
+        productService.increaseStock(id, quantity);
+        return ResponseEntity.ok(ApiResponse.success());
+    }
+
 }

@@ -11,4 +11,7 @@ public interface ProductClient {
     @PostMapping("/internal/{id}/decrease-stock")
     void decreaseStock(@PathVariable("id") Long productId, @RequestParam("quantity") int quantity);
 
+    @PostMapping("/internal/{id}/increase-stock")
+    void increaseStock(@PathVariable("id") Long productId, @RequestParam("quantity") int quantity);
+
 }

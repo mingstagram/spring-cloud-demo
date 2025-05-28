@@ -10,12 +10,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(
         name = "user-service",
-        url = "http://localhost:8000",
         configuration = FeignConfig.class,
         fallbackFactory = UserClientFallbackFactory.class
 )
 public interface UserClient {
 
-    @GetMapping("/user/by-email")
+    @GetMapping("/by-email")
     ApiResponse<UserResponse> getUserByEmail(@RequestParam("email") String email);
 }

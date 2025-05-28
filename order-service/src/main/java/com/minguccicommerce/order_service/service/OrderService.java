@@ -5,10 +5,16 @@ import com.minguccicommerce.order_service.dto.OrderRequest;
 import com.minguccicommerce.order_service.dto.OrderResponse;
 import com.minguccicommerce.order_service.dto.OrderStatus;
 import com.minguccicommerce.order_service.entity.Order;
+import com.minguccicommerce.order_service.exception.OrderNotFoundException;
+import com.minguccicommerce.order_service.exception.UserNotFoundException;
 import com.minguccicommerce.order_service.repository.OrderRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +37,43 @@ public class OrderService {
         orderRepository.save(order);
 
         return OrderResponse.from(order);
+    }
+
+    public List<OrderResponse> getMyOrders(Long userId) {
+        return orderRepository.findByUserId(userId)
+                .stream().map(OrderResponse::from)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void updateOrderStatus(Long orderId, OrderStatus status) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderNotFoundException(orderId));
+        order.updateStatus(status);
+    }
+
+    @Transactional
+    public void cancelOrder(Long orderId, Long userId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderNotFoundException(orderId));
+
+        if(!order.getUserId().equals(userId)) {
+            throw new UserNotFoundException("본인의 주문만 취소할 수 있습니다.");
+        }
+
+        productClient.increaseStock(order.getProductId(), order.getQuantity());
+        order.cancelOrder();
+
+    }
+
+    public Map<OrderStatus, Long> getOrderStatus(Long userId) {
+        List<Object[]> result = orderRepository.countOrdersByStatus(userId);
+
+        return result.stream()
+                .collect(Collectors.toMap(
+                        row -> (OrderStatus) row[0],
+                        row -> (Long) row[1]
+                ));
     }
 
 }
