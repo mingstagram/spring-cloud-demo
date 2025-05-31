@@ -26,6 +26,7 @@ spring-cloud-demo/
 ├── email-service            # 이메일 인증 코드 전송/검증 (Redis)
 ├── product-service          # 상품 관리 (조회, 등록, 수정)
 ├── order-service            # 주문 처리, 장바구니 흐름
+├── cart-service              # Redis 기반 장바구니 관리 (상품 추가/삭제/조회)
 ├── inventory-service        # 재고 차감, 재고 조회
 ├── payment-service          # 결제 처리 흐름 (요청, 승인, 취소)
 ├── notification-service     # WebSocket 실시간 알림 처리

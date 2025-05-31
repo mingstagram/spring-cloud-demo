@@ -1,0 +1,23 @@
+server:
+  port: 0
+
+spring:
+  application:
+    name: cart-service
+
+  data:
+    redis:
+      host: 192.168.5.61
+      port: 6379
+      timeout: 1000ms
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+
+jwt:
+  secret: minguccicommerce-secure-jwt-key-which-is-very-long-32byte
+  access-token-expiration: 900000
+  refresh-token-expiration: 604800000
