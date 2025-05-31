@@ -18,7 +18,7 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long orderId; // 주문 번호
+    private String orderId;// 주문 번호
 
     private int amount; // 결제 금액
 
