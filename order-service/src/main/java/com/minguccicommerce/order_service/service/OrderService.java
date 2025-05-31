@@ -1,5 +1,6 @@
 package com.minguccicommerce.order_service.service;
 
+import com.minguccicommerce.common_library.redis.RedisPublisher;
 import com.minguccicommerce.order_service.client.ProductClient;
 import com.minguccicommerce.order_service.dto.OrderRequest;
 import com.minguccicommerce.order_service.dto.OrderResponse;
@@ -10,6 +11,7 @@ import com.minguccicommerce.order_service.exception.UserNotFoundException;
 import com.minguccicommerce.order_service.repository.OrderRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,10 +20,12 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OrderService {
 
     private final OrderRepository orderRepository;
     private final ProductClient productClient;
+    private final RedisPublisher redisPublisher;
 
     @Transactional
     public OrderResponse createOrder(Long userId, OrderRequest request) {
@@ -33,8 +37,12 @@ public class OrderService {
                 .quantity(request.getQuantity())
                 .status(OrderStatus.CREATED)
                 .build();
-
         orderRepository.save(order);
+
+        // Redis로 알림 발행
+        String message = String.format("주문이 완료되었습니다. (상품ID: %d, 수량: %d)", request.getProductId(), request.getQuantity());
+        log.info("✅ Redis 알림 발행: {}", message); // 이거 찍히는지 로그 확인
+        redisPublisher.publish(message);
 
         return OrderResponse.from(order);
     }

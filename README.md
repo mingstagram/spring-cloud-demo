@@ -44,12 +44,12 @@ spring-cloud-demo/
 ✅ 주문 취소 시 → 재고 복구 처리
 ✅ 결제 처리 (결제 요청 / 승인 / 취소 포함)
 ✅ 장바구니 담기 (Redis 캐시 기반)
+✅ 주문 완료 시 실시간 알림
 
 ---
 
 🟡 다음 작업 예정
 
-☑️ 주문 완료 시 이메일 전송, 실시간 알림  
 ☑️ 장애 발생 시 Fallback 처리 (Resilience4j)  
 ☑️ Gateway RateLimiter 적용  
 ☑️ Zipkin 기반 서비스 트레이싱

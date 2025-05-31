@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+</head>
+<body>
+<h2>WebSocket 알림 테스트</h2>
+<button onclick="connect()">Connect</button>
+<button onclick="send()">Send Test</button>
+
+<script>
+    let stompClient = null;
+
+    function connect() {
+        const socket = new SockJS('http://localhost:8088/ws-notification');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function (frame) {
+            console.log('Connected: ' + frame);
+            stompClient.subscribe('/topic/notifications', function (message) {
+                alert("🔔 알림 수신됨: " + message.body);
+            });
+        });
+    }
+
+    function send() {
+        stompClient.send("/app/hello", {}, "테스트 메시지");
+    }
+</script>
+</body>
+</html>
