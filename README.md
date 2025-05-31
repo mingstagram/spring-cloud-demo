@@ -43,12 +43,12 @@ spring-cloud-demo/
 ✅ 상품 목록/상세 / 검색 / 등록  
 ✅ 주문 생성 → Kafka로 재고 차감 이벤트 발송  
 ✅ 결제 처리 (결제 요청 / 승인 / 취소 포함)
+✅ 장바구니 담기 (Redis 캐시 기반)
 
 ---
 
 🟡 다음 작업 예정
 
-☑️ 장바구니 담기 (Redis 캐시 기반)  
 ☑️ 주문 완료 시 이메일 전송, 실시간 알림  
 ☑️ 장애 발생 시 Fallback 처리 (Resilience4j)  
 ☑️ Gateway RateLimiter 적용  
