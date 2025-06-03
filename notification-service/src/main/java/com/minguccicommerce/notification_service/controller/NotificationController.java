@@ -10,7 +10,7 @@ import org.springframework.stereotype.Controller;
 @RequiredArgsConstructor
 public class NotificationController {
 
-    @MessageMapping("/hello")
+    @MessageMapping("/send")
     @SendTo("/topic/notifications")
     public String sendMessage(String message) {
         return "서버로부터 받은 메시지: " + message;

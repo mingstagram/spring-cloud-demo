@@ -1,69 +1,70 @@
-# 🌐 Common Library - Global Exception & Response Module
+# 🧰 Common Library
 
-`common_library`는 B2C 기반 MSA 프로젝트에서 각 서비스 간의 **예외 처리 통일성**과 **응답 포맷 일관성**을 확보하기 위해 설계된 공통 모듈입니다.
-
----
-
-## ✅ 목적
-
-- 모든 서비스에서 동일한 방식으로 예외를 처리하고,
-- 공통된 `ApiResponse` 포맷으로 응답을 내려주기 위해 구성되었습니다.
-- Validation, 비즈니스 예외, 시스템 예외 등을 범용적으로 처리합니다.
+이 모듈은 커머스 플랫폼의 공통 기능을 모아놓은 **공통 유틸리티 및 설정 라이브러리**입니다.  
+각 서비스는 해당 라이브러리를 의존성으로 추가하여 예외 처리, 응답 포맷, JWT 보안, Redis Pub/Sub 등을 재사용합니다.
 
 ---
 
-## 📦 패키지 구조 및 설명
+## 📦 주요 패키지 구성
 
-| 파일명 | 설명 |
-|--------|------|
-| `ApiResponse` | 일반적인 성공/실패 응답 포맷 클래스 |
-| `PageResponse` | 페이징 처리 응답 전용 DTO |
-| `ValidationErrorResponse` | `@Valid` 검증 실패 시 응답 포맷 |
-| `FieldErrorDetail` | 필드별 검증 오류 상세 정보 |
-| `ErrorCode` | 에러 코드 및 메시지를 enum으로 정의 |
-| `CustomException` | 비즈니스 예외 커스텀 클래스 |
-| `GlobalExceptionHandler` | `@RestControllerAdvice`를 통한 예외 전역 처리 |
+| 패키지 명         | 설명                                                         |
+|--------------------|--------------------------------------------------------------|
+| `config`           | 공통 Spring Bean 설정 (e.g. 비밀번호 인코딩)                |
+| `dto`              | API 응답 포맷, 이메일 인증 요청 등 공통 DTO 정의             |
+| `exception`        | 전역 예외 처리, 에러 코드 관리, 유효성 검사 에러 응답 등     |
+| `jwt`              | JWT 발급 및 검증 유틸리티, 프로퍼티 설정                     |
+| `redis`            | Redis Pub/Sub 구성, 메시지 발행 퍼블리셔                    |
+| `security`         | JWT 인증 필터 (`JwtAuthenticationFilter`) 구현               |
 
 ---
 
-## 🛠 사용 예시
+## 🔧 예외 처리 구성
+
+- `CustomException`, `ErrorCode`: 비즈니스 예외 및 에러코드 Enum 관리
+- `GlobalExceptionHandler`: ControllerAdvice 기반 전역 예외 핸들러
+- `ValidationErrorResponse`: `@Valid` 실패 시 에러 메시지 포맷 통일
+- 사용 예시:
 
 ```java
-// 비즈니스 예외 발생
-if (user == null) {
-        throw new CustomException(ErrorCode.USER_NOT_FOUND);
+if (!user.exists()) {
+    throw new CustomException(ErrorCode.USER_NOT_FOUND);
 }
 ```
 
-```java
-// 응답 예시
-return ApiResponse.success(user);
-```
+---
+
+## 🔐 JWT 유틸리티
+
+- `JwtProvider`: AccessToken, RefreshToken 발급 및 검증 기능
+- `JwtProperties`: yml 설정과 매핑되는 프로퍼티 클래스
+- 서비스별 인증 필터(`JwtAuthenticationFilter`)에서 활용됨
 
 ---
 
-## 📌 연동 방법
+## 📡 Redis Pub/Sub 구성
 
-- 공통 모듈로 분리하여 각 서비스에서 dependency로 참조
-- 의존성 추가 (예: `pom.xml`)
+- `RedisConfig`: RedisTemplate 및 기본 설정
+- `RedisPublisher`: 알림 메시지 발행 시 사용
+- `RedisTopicConfig`: 주제 설정 (e.g. 알림용 topic)
+
+---
+
+## 🧪 사용 예시
+
+**다른 서비스에서 이 라이브러리 사용 시 (Maven):**
 
 ```xml
 <dependency>
-    <groupId>com.mingucci</groupId>
+    <groupId>com.minguccicommerce</groupId>
     <artifactId>common-library</artifactId>
-    <version>1.0.0</version>
+    <version>0.0.1-SNAPSHOT</version>
 </dependency>
 ```
 
 ---
 
-## 💡 기대 효과
+## 💡 기타 참고
 
-- 서비스 간 예외 및 응답 포맷 일관성 확보
-- 공통 정책 적용으로 유지보수 편의성 증가
-- 신규 서비스 확장 시 재사용성 극대화
-
----
-
-## 🔗 관련 프로젝트
-- `user-service`, `order-service`, `gateway` 등에서 공통 모듈로 사용
+- 모든 공통 응답은 `ApiResponse<T>` 형태로 통일
+- 모든 예외는 HTTP 상태 코드와 함께 일관된 구조로 응답됨
+- 이메일 인증, JWT 인증, 알림 등 다양한 서비스 간 공통 로직 캡슐화

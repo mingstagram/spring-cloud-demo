@@ -60,6 +60,18 @@ spring:
           filters:
             - StripPrefix=1
 
+        - id: notification-service
+          uri: lb:ws://notification-service
+          predicates:
+            - Path=/ws/**
+          filters:
+            - StripPrefix=1
+
+        - id: notification-static
+          uri: lb://notification-service
+          predicates:
+            - Path=/notification-test.html
+
 eureka:
   client:
     service-url:

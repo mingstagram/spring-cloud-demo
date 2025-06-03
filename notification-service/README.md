@@ -2,7 +2,7 @@
 
 이 서비스는 주문 완료 후 실시간 알림을 사용자에게 전송하는 역할을 합니다.  
 Redis Pub/Sub과 Spring WebSocket(SockJS + STOMP)을 기반으로 구성되어 있으며,  
-Gateway를 통해 `/ws-notification` 엔드포인트로 접근할 수 있습니다.
+Gateway를 통해 `/ws/notification` 엔드포인트로 접근할 수 있습니다.
 
 ---
 
@@ -31,7 +31,7 @@ Gateway를 통해 `/ws-notification` 엔드포인트로 접근할 수 있습니�
 <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 
 <script>
-    const socket = new SockJS('http://localhost:8088/ws-notification');
+    const socket = new SockJS('http://localhost:8001/ws/notification');
     const stompClient = Stomp.over(socket);
 
     stompClient.connect({}, function (frame) {
