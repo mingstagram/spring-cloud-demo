@@ -1,4 +1,3 @@
-
 # 🛍️ Product Service + Elasticsearch 연동
 
 이 서비스는 커머스 플랫폼의 **상품 도메인**을 담당합니다.  
@@ -37,20 +36,54 @@
 
 ### 2. 상품 검색 (Elasticsearch)
 
-- **URL**: `GET /product/search?query=마우스`
-- **기능**: 상품명, 설명, 카테고리에 대해 부분 일치 검색 수행
+- **URL**: `POST /product/search`
+- **기능**: 상품명, 설명, 카테고리에 대해 부분 일치 검색을 수행하며, 페이징 처리를 지원합니다.
+- **요청 예시**:
+```json
+{
+  "keyword": "반팔티", // 
+  "page": 0,
+  "size": 5
+}
+```
+
+- **응답 예시**:
+```json
+{
+  "success": true,
+  "data": {
+    "products": [
+      {
+        "id": 1,
+        "name": "무신사 로고 반팔티",
+        "description": "베이직한 디자인의 여름용 반팔 티셔츠입니다.",
+        "category": "상의",
+        "price": 25000
+      }
+    ],
+    "currentPage": 1,
+    "totalPages": 2,
+    "totalElements": 10
+  },
+  "message": null
+}
+```
+
+- **비고**:
+    - `keyword`가 빈 문자열(`""`)일 경우 전체 상품을 조회합니다.
+    - `page`, `size`는 기본값을 지정해둘 수 있으며, 생략 시 첫 페이지(0번), 10개 단위로 조회됩니다.
 
 ---
 
 ## 📦 데이터 흐름 요약
 
 1. 상품 등록 시:
-  - DB 저장 (`productRepository.save`)
-  - Elasticsearch 색인 (`productSearchRepository.save`)
+- DB 저장 (`productRepository.save`)
+- Elasticsearch 색인 (`productSearchRepository.save`)
 2. 상품 검색 시:
-  - `ProductSearchRepository`를 통한 색인 검색
+- `ProductSearchRepository`를 통한 색인 검색
 3. 색인 구조:
-  - `ProductDocument` 클래스 기반 (`@Document(indexName = "products")`)
+- `ProductDocument` 클래스 기반 (`@Document(indexName = "products")`)
 
 ---
 

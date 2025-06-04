@@ -2,8 +2,13 @@ package com.minguccicommerce.product_service.service;
 
 import com.minguccicommerce.product_service.document.ProductDocument;
 import com.minguccicommerce.product_service.dto.ProductResponse;
+import com.minguccicommerce.product_service.dto.ProductSearchRequest;
+import com.minguccicommerce.product_service.dto.ProductSearchResponse;
 import com.minguccicommerce.product_service.repository.ProductSearchRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,18 +20,18 @@ public class ProductSearchService {
 
     private final ProductSearchRepository productSearchRepository;
 
-    public List<ProductResponse> search(String keyword) {
-        List<ProductDocument> docs = productSearchRepository
-                .findByNameContainingOrDescriptionContainingOrCategoryContaining(keyword, keyword, keyword);
-
-        return docs.stream()
+    public ProductSearchResponse search(ProductSearchRequest request) {
+        Pageable pageable = PageRequest.of(request.getPage(), request.getSize());
+        Page<ProductDocument> page = productSearchRepository.findByNameContainingOrDescriptionContainingOrCategoryContaining(
+                request.getKeyword(), request.getKeyword(), request.getKeyword(), pageable
+        );
+        List<ProductResponse> results = page.getContent().stream()
                 .map(doc -> new ProductResponse(
-                        doc.getId(),
-                        doc.getName(),
-                        doc.getDescription(),
-                        doc.getPrice(),
-                        doc.getCategory()
-                )).collect(Collectors.toList());
+                        doc.getId(), doc.getName(), doc.getDescription(),
+                        doc.getPrice(), doc.getCategory()))
+                .toList();
+
+        return new ProductSearchResponse(results, page.getNumber(), page.getTotalPages(), page.getTotalElements());
     }
 
 }

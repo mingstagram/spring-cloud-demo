@@ -3,6 +3,8 @@ package com.minguccicommerce.product_service.controller;
 import com.minguccicommerce.common_library.dto.ApiResponse;
 import com.minguccicommerce.product_service.dto.ProductRequest;
 import com.minguccicommerce.product_service.dto.ProductResponse;
+import com.minguccicommerce.product_service.dto.ProductSearchRequest;
+import com.minguccicommerce.product_service.dto.ProductSearchResponse;
 import com.minguccicommerce.product_service.entity.Product;
 import com.minguccicommerce.product_service.service.ProductSearchService;
 import com.minguccicommerce.product_service.service.ProductService;
@@ -46,9 +48,9 @@ public class ProductController {
         return ResponseEntity.ok(ApiResponse.ok(response));
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<ApiResponse<List<ProductResponse>>> searchProducts(@RequestParam String query) {
-        List<ProductResponse> results = productSearchService.search(query);
+    @PostMapping("/search")
+    public ResponseEntity<ApiResponse<ProductSearchResponse>> searchProducts(@RequestBody ProductSearchRequest request) {
+        ProductSearchResponse results = productSearchService.search(request);
         return ResponseEntity.ok(ApiResponse.ok(results));
     }
 
