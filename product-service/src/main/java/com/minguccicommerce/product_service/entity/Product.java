@@ -1,9 +1,11 @@
 package com.minguccicommerce.product_service.entity;
 
 import com.minguccicommerce.product_service.document.ProductDocument;
+import com.minguccicommerce.product_service.dto.ProductRequest;
 import com.minguccicommerce.product_service.exception.InsufficientStockException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Product {
 
     @Id
@@ -35,6 +38,14 @@ public class Product {
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    public Product(String name, String description, Integer price, Integer stock, String category) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.stock = stock;
+        this.category = category;
+    }
 
     @PrePersist
     protected void onCreate() {
@@ -65,5 +76,15 @@ public class Product {
                 .category(this.category)
                 .price(this.price)
                 .build();
+    }
+
+    public static Product from(ProductRequest request) {
+        return new Product(
+                request.getName(),
+                request.getDescription(),
+                request.getPrice(),
+                request.getStock(),
+                request.getCategory()
+        );
     }
 }

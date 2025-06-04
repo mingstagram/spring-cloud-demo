@@ -7,7 +7,7 @@ import com.minguccicommerce.user_service.entity.User;
 import com.minguccicommerce.user_service.exception.InvalidPasswordException;
 import com.minguccicommerce.user_service.exception.UserNotFoundException;
 import com.minguccicommerce.user_service.repository.UserRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

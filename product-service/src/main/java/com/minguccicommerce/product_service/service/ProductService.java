@@ -1,10 +1,12 @@
 package com.minguccicommerce.product_service.service;
 
+import com.minguccicommerce.product_service.dto.ProductRequest;
 import com.minguccicommerce.product_service.dto.ProductResponse;
 import com.minguccicommerce.product_service.entity.Product;
 import com.minguccicommerce.product_service.exception.ProductNotFoundException;
 import com.minguccicommerce.product_service.repository.ProductRepository;
-import jakarta.transaction.Transactional;
+import com.minguccicommerce.product_service.repository.ProductSearchRepository;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,7 @@ import java.util.List;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final ProductSearchRepository productSearchRepository;
 
     public List<ProductResponse> getAllProducts() {
         return productRepository.findAll()
@@ -38,6 +41,17 @@ public class ProductService {
     public void increaseStock(Long id, int quantity) {
         Product product = findById(id);
         product.increaseStock(quantity);
+    }
+
+    @Transactional
+    public Product registerProduct(ProductRequest request) {
+        Product product = Product.from(request);
+        Product saved = productRepository.save(product);
+
+        // Elasticsearch 색인 등록
+        productSearchRepository.save(saved.toDocument());
+
+        return saved;
     }
 
     private Product findById(Long id) {

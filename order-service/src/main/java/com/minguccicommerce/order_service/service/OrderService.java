@@ -9,7 +9,7 @@ import com.minguccicommerce.order_service.entity.Order;
 import com.minguccicommerce.order_service.exception.OrderNotFoundException;
 import com.minguccicommerce.order_service.exception.UserNotFoundException;
 import com.minguccicommerce.order_service.repository.OrderRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

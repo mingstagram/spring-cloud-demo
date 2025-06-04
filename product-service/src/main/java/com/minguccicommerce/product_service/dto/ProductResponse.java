@@ -11,7 +11,7 @@ public class ProductResponse {
     private String name;
     private String description;
     private Integer price;
-    private Integer stock;
+    private String category;
 
     public static ProductResponse from(Product product) {
         return new ProductResponse(
@@ -19,7 +19,7 @@ public class ProductResponse {
                 product.getName(),
                 product.getDescription(),
                 product.getPrice(),
-                product.getStock()
+                product.getCategory()
         );
     }
 }
