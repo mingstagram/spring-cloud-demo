@@ -1,5 +1,6 @@
 package com.minguccicommerce.product_service.entity;
 
+import com.minguccicommerce.product_service.document.ProductDocument;
 import com.minguccicommerce.product_service.exception.InsufficientStockException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -29,6 +30,9 @@ public class Product {
     @Column(nullable = false)
     private Integer stock;
 
+    @Column(nullable = false, length = 50)
+    private String category;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -51,5 +55,15 @@ public class Product {
 
     public void increaseStock(int quantity) {
         this.stock += quantity;
+    }
+
+    public ProductDocument toDocument() {
+        return ProductDocument.builder()
+                .id(this.id)
+                .name(this.name)
+                .description(this.description)
+                .category(this.category)
+                .price(this.price)
+                .build();
     }
 }
