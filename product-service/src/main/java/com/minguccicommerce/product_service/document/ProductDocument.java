@@ -1,5 +1,7 @@
 package com.minguccicommerce.product_service.document;
 
+import com.minguccicommerce.product_service.dto.ProductResponse;
+import com.minguccicommerce.product_service.entity.Product;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,5 +32,15 @@ public class ProductDocument {
 
     @Field(type = FieldType.Integer)
     private Integer price;
+
+    public static ProductDocument from(Product product) {
+        return new ProductDocument(
+                product.getId(),
+                product.getName(),
+                product.getDescription(),
+                product.getCategory(),
+                product.getPrice()
+        );
+    }
 
 }

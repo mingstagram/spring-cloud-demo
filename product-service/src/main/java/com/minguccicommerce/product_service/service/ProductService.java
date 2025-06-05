@@ -1,5 +1,6 @@
 package com.minguccicommerce.product_service.service;
 
+import com.minguccicommerce.product_service.document.ProductDocument;
 import com.minguccicommerce.product_service.dto.ProductRequest;
 import com.minguccicommerce.product_service.dto.ProductResponse;
 import com.minguccicommerce.product_service.entity.Product;
@@ -52,6 +53,19 @@ public class ProductService {
         productSearchRepository.save(saved.toDocument());
 
         return saved;
+    }
+
+    @Transactional
+    public ProductResponse updateProduct(Long id, ProductRequest request) {
+        Product product = findById(id);
+
+        product.update(request.getName(), request.getDescription(), request.getPrice(), request.getStock(), request.getCategory());
+
+        // DB 저장 후 Elasticsearch 업데이트
+        productRepository.save(product);
+        productSearchRepository.save(ProductDocument.from(product)); // Elasticsearch 색인 갱신
+
+        return ProductResponse.from(product);
     }
 
     private Product findById(Long id) {

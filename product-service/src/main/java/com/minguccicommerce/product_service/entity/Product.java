@@ -87,4 +87,12 @@ public class Product {
                 request.getCategory()
         );
     }
+
+    public void update(String name, String description, int price, int stock, String category) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.stock = stock;
+        this.category = category;
+    }
 }

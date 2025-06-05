@@ -37,13 +37,15 @@
 ### 2. 상품 검색 (Elasticsearch)
 
 - **URL**: `POST /product/search`
-- **기능**: 상품명, 설명, 카테고리에 대해 부분 일치 검색을 수행하며, 페이징 처리를 지원합니다.
+- **기능**: 상품명, 설명, 카테고리에 대해 부분 일치 검색을 수행하며, 페이징 처리와 정렬을 지원합니다.
 - **요청 예시**:
 ```json
 {
-  "keyword": "반팔티", // 
+  "keyword": "반팔티",
   "page": 0,
-  "size": 5
+  "size": 10,
+  "sortField": "id",
+  "sortDirection": "asc"
 }
 ```
 
@@ -64,6 +66,35 @@
     "currentPage": 1,
     "totalPages": 2,
     "totalElements": 10
+  },
+  "message": null
+}
+```
+
+### 3. 상품 수정 (Elasticsearch)
+
+- **URL**: `POST /product/{id}`
+- **요청 예시**:
+```json
+{
+  "name": "여름 반팔 셔츠",
+  "description": "시원하고 깔끔한 여름용 셔츠",
+  "price": 39000,
+  "stock": 80,
+  "category": "의류"
+}
+```
+
+- **응답 예시**:
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "name": "여름 반팔 셔츠",
+    "description": "시원하고 깔끔한 여름용 셔츠",
+    "price": 39000,
+    "category": "의류"
   },
   "message": null
 }

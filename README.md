@@ -9,7 +9,7 @@
 
 - **B2C 실무 구조를 반영한 MSA 설계**
 - **Spring Cloud 전체 컴포넌트 구성(Config, Gateway, Eureka 등)**
-- **OpenFeign + Kafka를 통한 통합 통신 구조**
+- **OpenFeign을 통한 통합 통신 구조**
 - **실시간 알림, 인증 처리, 장애 대응, 트래픽 제어까지 포함한 실전 프로젝트**
 
 ---
