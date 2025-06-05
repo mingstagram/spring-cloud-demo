@@ -50,7 +50,7 @@ public class ProductService {
         Product saved = productRepository.save(product);
 
         // Elasticsearch 색인 등록
-        productSearchRepository.save(saved.toDocument());
+        productSearchRepository.save(ProductDocument.from(product));
 
         return saved;
     }

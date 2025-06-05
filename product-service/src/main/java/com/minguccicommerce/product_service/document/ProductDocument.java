@@ -7,9 +7,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.CompletionField;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.core.suggest.Completion;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -33,14 +37,21 @@ public class ProductDocument {
     @Field(type = FieldType.Integer)
     private Integer price;
 
+    @CompletionField(maxInputLength = 100)
+    private Completion suggest;
+
     public static ProductDocument from(Product product) {
-        return new ProductDocument(
-                product.getId(),
-                product.getName(),
-                product.getDescription(),
-                product.getCategory(),
-                product.getPrice()
-        );
+        return ProductDocument.builder()
+                .id(product.getId())
+                .name(product.getName())
+                .description(product.getDescription())
+                .category(product.getCategory())
+                .price(product.getPrice())
+                .suggest(new Completion(List.of(
+                        product.getName(),
+                        product.getCategory()
+                )))
+                .build();
     }
 
 }

@@ -1,5 +1,6 @@
 package com.minguccicommerce.product_service.service;
 
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import com.minguccicommerce.product_service.document.ProductDocument;
 import com.minguccicommerce.product_service.dto.ProductResponse;
 import com.minguccicommerce.product_service.dto.ProductSearchRequest;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 public class ProductSearchService {
 
     private final ProductSearchRepository productSearchRepository;
+    private final ElasticsearchClient elasticsearchClient;
 
     public ProductSearchResponse search(ProductSearchRequest request) {
         // 정렬 방향 설정
@@ -44,8 +47,10 @@ public class ProductSearchService {
                         doc.getId(), doc.getName(), doc.getDescription(),
                         doc.getPrice(), doc.getCategory()))
                 .toList();
-
+        
         return new ProductSearchResponse(results, page.getNumber(), page.getTotalPages(), page.getTotalElements());
     }
+
+
 
 }

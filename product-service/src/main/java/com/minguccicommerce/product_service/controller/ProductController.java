@@ -8,10 +8,12 @@ import com.minguccicommerce.product_service.dto.ProductSearchResponse;
 import com.minguccicommerce.product_service.entity.Product;
 import com.minguccicommerce.product_service.service.ProductSearchService;
 import com.minguccicommerce.product_service.service.ProductService;
+import com.minguccicommerce.product_service.service.ProductSuggestionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -20,6 +22,7 @@ public class ProductController {
 
     private final ProductService productService;
     private final ProductSearchService productSearchService;
+    private final ProductSuggestionService productSuggestionService;
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<ProductResponse>>> getAllProducts() {
@@ -61,6 +64,12 @@ public class ProductController {
     ) {
         ProductResponse updated = productService.updateProduct(id, request);
         return ResponseEntity.ok(ApiResponse.ok(updated));
+    }
+
+    @GetMapping("/suggest")
+    public ResponseEntity<ApiResponse<List<String>>> autocomplete(@RequestParam String prefix) throws IOException {
+        List<String> suggestions = productSuggestionService.getSuggestions(prefix);
+        return ResponseEntity.ok(ApiResponse.ok(suggestions));
     }
 
 }
