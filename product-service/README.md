@@ -1,20 +1,21 @@
 # 🛍️ Product Service + Elasticsearch 연동
 
 이 서비스는 커머스 플랫폼의 **상품 도메인**을 담당합니다.  
-기본적인 상품 등록/조회/재고 관리 외에, Elasticsearch 연동을 통해 **검색 기능**도 제공합니다.
+기본적인 상품 등록/조회/재고 관리 외에, Elasticsearch 연동을 통해 **검색 기능**, **자동완성(Auto-Complete) 기능**도 제공합니다.
 
 ---
 
 ## 🔧 주요 기능
 
-| 기능               | 설명                                                              |
-|--------------------|-------------------------------------------------------------------|
-| 상품 등록           | 상품 정보를 DB와 Elasticsearch에 모두 저장합니다.               |
-| 상품 목록 조회      | 전체 상품 리스트를 반환합니다.                                   |
-| 상품 상세 조회      | 특정 상품의 상세 정보를 조회합니다.                               |
-| 상품 검색           | Elasticsearch 기반으로 상품명, 설명, 카테고리로 검색합니다.     |
-| 재고 차감           | 주문 시 상품 재고를 차감합니다. (`/internal/{id}/decrease-stock`) |
-| 재고 복구           | 주문 취소 시 상품 재고를 복구합니다. (`/internal/{id}/increase-stock`) |
+| 기능       | 설명                                                              |
+|----------|-------------------------------------------------------------------|
+| 상품 등록    | 상품 정보를 DB와 Elasticsearch에 모두 저장합니다.               |
+| 상품 목록 조회 | 전체 상품 리스트를 반환합니다.                                   |
+| 상품 상세 조회 | 특정 상품의 상세 정보를 조회합니다.                               |
+| 상품 검색    | Elasticsearch 기반으로 상품명, 설명, 카테고리로 검색합니다.     |
+| 상품 자동완성  | 사용자가 입력한 prefix 기반으로 자동완성 추천어를 제공합니다.                               |
+| 재고 차감    | 주문 시 상품 재고를 차감합니다. (`/internal/{id}/decrease-stock`) |
+| 재고 복구    | 주문 취소 시 상품 재고를 복구합니다. (`/internal/{id}/increase-stock`) |
 
 ---
 
@@ -104,17 +105,53 @@
     - `keyword`가 빈 문자열(`""`)일 경우 전체 상품을 조회합니다.
     - `page`, `size`는 기본값을 지정해둘 수 있으며, 생략 시 첫 페이지(0번), 10개 단위로 조회됩니다.
 
+  
+### 4. 상품 자동완성 (Elasticsearch)
+- **URL**: `GET /product/suggest?prefix={검색어}`
+- **기능**: 입력한 prefix(단어의 앞부분)에 대해 상품명 또는 카테고리 기반 자동완성 추천어를 최대 10개까지 제공합니다.
+  Elasticsearch의 `Completion Suggester` 기능을 활용하여 추천어 중복 제거 및 실시간 응답을 제공합니다.
+
+
+- 요청 예시:
+```
+GET /product/suggest?prefix=셔
+```
+
+- 응답 예시:
+```json
+{
+  "success": true,
+  "data": [
+    "셔링 블라우스",
+    "셔츠형 원피스",
+    "셔츠형 자켓"
+  ],
+  "message": null
+}
+
+```
+
+- 비고:
+  - `prefix`는 사용자가 입력한 추천어의 앞글자를 의미합니다.
+  - 추천어는 상품 등록 시 `ProductDocument`의 `suggest`필드에 name, category 값이 함께 색인되어 저장됩니다.
+  - 색인은 상품 등록 또는 수정 시 자동으로 반영됩니다.
+  - Elasticsearch 8.x + Spring Boot 3.x 환경에서 `Elasticsearch Java API Client`를 사용해 구현되었습니다.
+
 ---
 
 ## 📦 데이터 흐름 요약
 
-1. 상품 등록 시:
-- DB 저장 (`productRepository.save`)
-- Elasticsearch 색인 (`productSearchRepository.save`)
-2. 상품 검색 시:
-- `ProductSearchRepository`를 통한 색인 검색
-3. 색인 구조:
-- `ProductDocument` 클래스 기반 (`@Document(indexName = "products")`)
+### 1. 상품 등록
+- DB에 저장 → Elasticsearch 색인까지 함께 등록
+- 색인 시 `name`, `category` 값을 기반으로 자동완성용 Suggest 필드 구성
+
+### 2. 상품 검색
+- `keyword`로 name, description, category 필드에 대해 부분 일치 검색
+- 페이징 + 정렬 포함
+
+### 3. 자동완성
+- `prefix`에 대한 `Completion Suggester` 기반 검색
+- `suggest` 필드 기준으로 중복 제거된 추천어 반환
 
 ---
 
