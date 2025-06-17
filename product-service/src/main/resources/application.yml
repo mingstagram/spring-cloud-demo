@@ -11,6 +11,16 @@ spring:
     password: 1111
     driver-class-name: org.mariadb.jdbc.Driver
 
+  kafka:
+    bootstrap-servers: 192.168.5.61:9092
+    consumer:
+      group-id: product-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.type.mapping: orderCreatedEvent:com.minguccicommerce.common_library.dto.OrderCreatedEvent
+
   jpa:
     hibernate:
       ddl-auto: update

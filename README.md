@@ -9,6 +9,7 @@
 
 - **B2C 실무 구조를 반영한 MSA 설계**
 - **Spring Cloud 전체 컴포넌트 구성**
+- **Kafka 기반 이벤트 중심 통합 처리**
 - **OpenFeign을 통한 통합 통신 구조**
 - **실시간 알림, 인증 처리, 장애 대응, 트래픽 제어까지 포함한 실전 프로젝트**
 
@@ -25,7 +26,7 @@ spring-cloud-demo/
 ├── auth-service             # 로그인/로그아웃, JWT 발급 및 인증
 ├── email-service            # 이메일 인증 코드 전송/검증 (Redis)
 ├── product-service          # 상품 관리 (조회, 등록, 수정), 재고 차감, 재고 조회, 상품 검색(자동완성)
-├── order-service            # 주문 처리, 장바구니 흐름
+├── order-service            # 주문 처리, 장바구니 흐름, Kafka 메시지 발행
 ├── cart-service             # Redis 기반 장바구니 관리 (상품 추가/삭제/조회)
 ├── payment-service          # 결제 처리 흐름 (요청, 승인, 취소)
 ├── notification-service     # WebSocket 실시간 알림 처리
@@ -61,23 +62,25 @@ spring-cloud-demo/
 - **기술**: Redis
 - **설명**: 사용자별 Redis 기반 장바구니 저장소 구성
 
-### 5️⃣ 주문 생성 → 재고 차감
+### 5️⃣ 주문 생성 → Kafka 이벤트 발행
 
-- **서비스**: `order-service`, `product-service`
-- **기술**: OpenFeign
-- **설명**: 주문 요청 시 product-service에 재고 차감 요청
+- **서비스**: `order-service`
+- **기술**: Kafka
+- **설명**: 주문 완료 시 `order.created` 이벤트를 Kafka에 발행
 
-### 6️⃣ 결제 요청 → 승인 / 취소
+### 6️⃣ Kafka 이벤트 수신 → 재고 차감 + 알림 전송
+
+- **서비스**: `product-service`, `notification-service`
+- **기술**: Kafka, WebSocket
+- **설명**: Kafka 컨슈머 구조로 주문 이벤트 처리  
+  → product-service에서 재고 감소  
+  → notification-service에서 WebSocket 알림 발송
+
+### 7️⃣ 결제 요청 → 승인 / 취소
 
 - **서비스**: `payment-service`
 - **기술**: TossPayments 연동, OpenFeign
 - **설명**: 외부 PG 연동을 통한 결제 흐름 구현
-
-### 7️⃣ 주문 완료 → 실시간 알림 전송
-
-- **서비스**: `notification-service`
-- **기술**: Redis Pub/Sub, WebSocket
-- **설명**: 주문 완료 후 사용자에게 WebSocket 알림 전송
 
 ---
 
@@ -86,6 +89,7 @@ spring-cloud-demo/
 ✅ 회원가입 / 로그인 / JWT 인증 / 회원탈퇴  
 ✅ 이메일 인증 코드 발송 및 검증 (Redis 기반)  
 ✅ 상품 목록/상세 / 검색 / 등록  
+✅ 주문 생성 시 Kafka 이벤트 발행  
 ✅ 주문 생성 → Product-Service에 재고 차감 요청  
 ✅ 주문 취소 시 → 재고 복구 처리  
 ✅ 결제 처리 (결제 요청 / 승인 / 취소 포함)  

@@ -32,9 +32,10 @@
   "email": "test@example.com",
   "password": "1234!abcd",
   "name": "김민국",
-  "nickname": "mingucci"
+  "emailCode": "028711" 
 }
 ```
+email-service에서 이메일인증이 완료된 이후에만 가능 
 
 - **응답 예시**:
 

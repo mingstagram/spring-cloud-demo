@@ -9,7 +9,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 
-@Configuration
+//@Configuration
 @RequiredArgsConstructor
 public class RedisMessageListnerConfig {
 

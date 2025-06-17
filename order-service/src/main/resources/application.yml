@@ -23,6 +23,15 @@ spring:
       port: 6379
       timeout: 1000ms
 
+  kafka:
+    bootstrap-servers: 192.168.5.61:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.type.mapping: orderCreatedEvent:com.minguccicommerce.common_library.dto.OrderCreatedEvent
+        spring.json.add.type.headers: true
+
 eureka:
   client:
     service-url:

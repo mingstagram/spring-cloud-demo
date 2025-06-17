@@ -9,24 +9,24 @@
 <body>
 <h2>WebSocket 알림 테스트</h2>
 <button onclick="connect()">Connect</button>
-<button onclick="send()">Send Test</button>
 
 <script>
     let stompClient = null;
+
+    // 로그인된 사용자 ID를 서버에서 받아오거나 쿠키/토큰에서 추출
+    const userId = 9; // 실제론 동적으로 설정해야 함
 
     function connect() {
         const socket = new SockJS('http://localhost:8001/ws/notification');
         stompClient = Stomp.over(socket);
         stompClient.connect({}, function (frame) {
             console.log('Connected: ' + frame);
-            stompClient.subscribe('/topic/notifications', function (message) {
+
+            // ✅ 사용자별 구독 경로
+            stompClient.subscribe(`/topic/notifications/${userId}`, function (message) {
                 alert("🔔 알림 수신됨: " + message.body);
             });
         });
-    }
-
-    function send() {
-        stompClient.send("/app/hello", {}, "테스트 메시지");
     }
 </script>
 </body>

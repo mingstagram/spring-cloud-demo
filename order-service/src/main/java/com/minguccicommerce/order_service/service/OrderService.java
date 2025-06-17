@@ -1,5 +1,6 @@
 package com.minguccicommerce.order_service.service;
 
+import com.minguccicommerce.common_library.dto.OrderCreatedEvent;
 import com.minguccicommerce.common_library.redis.RedisPublisher;
 import com.minguccicommerce.order_service.client.ProductClient;
 import com.minguccicommerce.order_service.dto.OrderRequest;
@@ -8,6 +9,7 @@ import com.minguccicommerce.order_service.dto.OrderStatus;
 import com.minguccicommerce.order_service.entity.Order;
 import com.minguccicommerce.order_service.exception.OrderNotFoundException;
 import com.minguccicommerce.order_service.exception.UserNotFoundException;
+import com.minguccicommerce.order_service.kafka.producer.OrderEventPublisher;
 import com.minguccicommerce.order_service.repository.OrderRepository;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final ProductClient productClient;
     private final RedisPublisher redisPublisher;
+    private final OrderEventPublisher orderEventPublisher;
 
     @Transactional
     public OrderResponse createOrder(Long userId, OrderRequest request) {
@@ -40,9 +43,20 @@ public class OrderService {
         orderRepository.save(order);
 
         // Redis로 알림 발행
-        String message = String.format("주문이 완료되었습니다. (상품ID: %d, 수량: %d)", request.getProductId(), request.getQuantity());
-        log.info("✅ Redis 알림 발행: {}", message); // 이거 찍히는지 로그 확인
-        redisPublisher.publish(message);
+//        String message = String.format("주문이 완료되었습니다. (상품ID: %d, 수량: %d)", request.getProductId(), request.getQuantity());
+//        log.info("✅ Redis 알림 발행: {}", message); // 이거 찍히는지 로그 확인
+//        redisPublisher.publish(message);
+
+        // ✅ Kafka 이벤트 발행
+        OrderCreatedEvent event = OrderCreatedEvent.builder()
+                .orderId(order.getId())
+                .userId(userId)
+                .productId(order.getProductId())
+                .quantity(order.getQuantity())
+                .build();
+
+        log.info("✅ Kafka 이벤트 발행: {}", event);
+        orderEventPublisher.publishOrderCreated(event);
 
         return OrderResponse.from(order);
     }
