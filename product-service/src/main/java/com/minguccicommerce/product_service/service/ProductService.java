@@ -38,6 +38,29 @@ public class ProductService {
         product.decreaseStock(quantity);
     }
 
+    public void decreaseStockWithRetry(Long id, int quantity) {
+        int maxTry = 3;
+        long backoff = 30L; // ms
+
+        for (int i = 0; i < maxTry; i++) {
+            try {
+                decreaseStockOnce(id, quantity); // 트랜잭션 1회 시도
+                return; // 성공
+            } catch (org.springframework.dao.OptimisticLockingFailureException e) {
+                sleep(backoff);
+                backoff *= 2; // 지수 백오프
+            }
+        }
+        throw new org.springframework.dao.OptimisticLockingFailureException("재고 차감 충돌 다수 발생");
+    }
+
+    @Transactional
+    public void decreaseStockOnce(Long id, int quantity) {
+        Product product = findById(id);   // version 포함 로드
+        product.decreaseStock(quantity);  // 도메인 검증 + 차감
+        // flush/save 불필요: 트랜잭션 커밋 시점에 업데이트 + 버전 증가
+    }
+
     @Transactional
     public void increaseStock(Long id, int quantity) {
         Product product = findById(id);
@@ -71,6 +94,10 @@ public class ProductService {
     private Product findById(Long id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException(id));
+    }
+
+    private static void sleep(long ms) {
+        try { Thread.sleep(ms); } catch (InterruptedException ignored) {}
     }
 
 }

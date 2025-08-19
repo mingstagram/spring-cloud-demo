@@ -36,6 +36,9 @@ public class Product {
     @Column(nullable = false, length = 50)
     private String category;
 
+    @Version
+    private Long version;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
